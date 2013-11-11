@@ -57,12 +57,13 @@ public class SoapServiceHandler extends AsyncTask<byte[], Object, SoapObject> {
 			request.addProperty("user_name", USER_NAME);
 			request.addProperty("license_code", LICENSE_CODE);
 
-			SoapObject inputFile = new SoapObject(NAMESPACE, "input_image");
+			SoapObject inputFile = new SoapObject(NAMESPACE, "OCRWSInputImage");
 			inputFile.addProperty("fileName", filename);
 			inputFile.addProperty("fileData", params[0]);
 
-			SoapObject inputOptions = new SoapObject(NAMESPACE, "ocr_settings");
+			SoapObject inputOptions = new SoapObject(NAMESPACE, "OCRWSSetting");
 			inputOptions
+			.addProperty("ocrLanguages", "ENGLISH")
 			.addProperty("ocrLanguages", "ENGLISH")
 			.addProperty("outputDocumentFormat", "TXT")
 			.addProperty("convertToBW", true)
@@ -70,12 +71,34 @@ public class SoapServiceHandler extends AsyncTask<byte[], Object, SoapObject> {
 			.addProperty("createOutputDocument", false)
 			.addProperty("multiPageDoc", false)
 			.addProperty("pageNumbers", "all pages");
-
-
+			
+			SoapObject ocrZones = new SoapObject(NAMESPACE, "ocrZones");
+			SoapObject ocrZone1 = new SoapObject(NAMESPACE, "ocrZone");
+			SoapObject ocrZone2 = new SoapObject(NAMESPACE, "ocrZone");
+			
+			ocrZone1.addProperty("Top", 0);
+			ocrZone1.addProperty("Left", 0);
+			ocrZone1.addProperty("Height", 0);
+			ocrZone1.addProperty("Width", 0);
+			ocrZone1.addProperty("ZoneType", 0);
+			
+			ocrZone2.addProperty("Top", 0);
+			ocrZone2.addProperty("Left", 0);
+			ocrZone2.addProperty("Height", 0);
+			ocrZone2.addProperty("Width", 0);
+			ocrZone2.addProperty("ZoneType", 0);
+			
+			ocrZones.addSoapObject(ocrZone1);
+			ocrZones.addSoapObject(ocrZone2);
+			
+			inputOptions.addSoapObject(ocrZones);
+			
+			inputOptions.addProperty("ocrWords", false);
+			
 			request.addSoapObject(inputFile);
 			request.addSoapObject(inputOptions);
 
-			Log.i(LP, "Creating envelope:");
+			Log.i(LP, "Creating envelope:\n\tRequest:");
 			Log.i(LP, request.toString());
 
 			envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
@@ -83,6 +106,8 @@ public class SoapServiceHandler extends AsyncTask<byte[], Object, SoapObject> {
 			envelope.dotNet=true;
 			envelope.setOutputSoapObject(request);
 			envelope.implicitTypes = true;
+			
+			Log.i(LP, "\tEnvelope:\n" + envelope.toString());
 
 			toastText = "Sent?";
 
@@ -135,7 +160,7 @@ public class SoapServiceHandler extends AsyncTask<byte[], Object, SoapObject> {
 		//Build alert message to show result text
 		AlertDialog.Builder builder  = new AlertDialog.Builder(mContext);
 		builder.setTitle("OCR Results");
-		builder.setMessage(text);	
+		builder.setMessage(so.toString());	
 		builder.create().show();
 
 		//try to log the response text
