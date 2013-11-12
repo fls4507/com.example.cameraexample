@@ -1,0 +1,11 @@
+getting other people's changes:
+
+- after they push (and verified its on github)
+- sync it via github
+	- git status
+	- git pull origin master
+
+	
+TO PUSH:
+- after modifying changes
+- git add 
