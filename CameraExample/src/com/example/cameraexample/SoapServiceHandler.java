@@ -1,6 +1,6 @@
 package com.example.cameraexample;
 
-import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapEnvelope; 
 import org.ksoap2.serialization.MarshalBase64;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
@@ -24,7 +24,8 @@ public class SoapServiceHandler extends AsyncTask<byte[], Object, SoapObject> {
 	
 	public static final String LP = "camera Example";
 
-
+	private String something;
+	
 	private String filename;
 	private Context mContext;
 	String toastText = "fail";
